@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "./config";
+import { DEFAULT_CONFIG, OFF_OPTION } from "./config";
 
 export const LABEL_PRESETS = [
 	DEFAULT_CONFIG.label,
@@ -59,27 +59,22 @@ export const WORKING_PREFIX_PRESETS = [
 ];
 
 export const FOOTER_PREFIX_PRESETS = [
+	OFF_OPTION,
 	DEFAULT_CONFIG.footerPrefix,
-	"prev",
-	"latest",
-	"last run",
-	"last zoomies",
-	"last nyoom",
-	"last brrr",
-	"last purr",
-	"last loaf",
-	"last cat",
-	"last sprint",
-	"last lap",
-	"last hunt",
-	"last mlem",
-	"last beans",
-	"last pounce",
-	"last whiskers",
-	"last chaos",
-	"last goblin",
-	"last braincat",
-	"last tuna burn",
+	"avg",
+	"session",
+	"overall",
+	"zoomies avg",
+	"nyoom avg",
+	"purr avg",
+	"loaf avg",
+	"beans avg",
+	"pounce avg",
+	"whisker avg",
+	"mlem avg",
+	"tuna avg",
+	"braincat avg",
+	"chaos avg",
 ];
 
 export const ICON_PRESETS = ["none", "✦", "◆", "◇", "◈", "⌁", "≋", "›", "⟡", "ฅ", "🐾", "󰓅", "󱐋", "󰄛", "󰣇", "", "", "", "", "", ""];

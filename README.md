@@ -5,7 +5,7 @@ A pi extension that shows assistant output speed with a configurable RunCat spee
 ## Features
 
 - Live median output speed while the assistant is streaming.
-- Footer status for the last assistant message speed.
+- Footer status for average speed across the current session.
 - RunCat working indicator whose animation speed follows token speed.
 - Custom speed labels, footer prefixes, and working text presets.
 - Interactive settings UI.
@@ -75,7 +75,7 @@ Configurable from `/pi-speeed`:
 - Speed badge icon, including `none`
 - Speed label presets/custom/random
 - Footer status on/off
-- Footer prefix presets/custom
+- Session-average footer prefix presets/custom/off
 - Working prefix presets/custom/random
 - Render interval
 - RunCat default/min/max frame interval
@@ -101,7 +101,7 @@ Aggregate stats are stored at:
 
 Aggregate speed totals exclude `error` and `aborted` messages so failed or cancelled streams do not skew speed calculations. Recent entries and stop reason counts still keep all messages.
 
-Stats include:
+The footer's live status shows the speed-eligible average for the current session. Aggregate stats are stored separately and include:
 
 - speed-eligible assistant messages
 - output tokens

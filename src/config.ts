@@ -6,6 +6,8 @@ export const CONFIG_PATH = join(process.env.HOME ?? "", ".pi/agent/pi-speeed.jso
 export const CUSTOM_OPTION = "Custom...";
 export const RANDOM_OPTION = "Random";
 export const RANDOM_VALUE = "__random__";
+export const OFF_OPTION = "Off";
+export const OFF_VALUE = "__off__";
 
 export type Config = {
 	enabled: boolean;
@@ -28,7 +30,7 @@ export const DEFAULT_CONFIG: Config = {
 	enabled: true,
 	runcat: true,
 	label: "tok/s",
-	footerPrefix: "last",
+	footerPrefix: "session avg",
 	workingPrefix: "Working...",
 	icon: "✦",
 	footer: true,

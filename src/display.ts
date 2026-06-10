@@ -1,5 +1,5 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { type Config, RANDOM_OPTION, RANDOM_VALUE, STATUS_ID } from "./config";
+import { type Config, OFF_OPTION, OFF_VALUE, RANDOM_OPTION, RANDOM_VALUE, STATUS_ID } from "./config";
 import { LABEL_PRESETS, randomPreset, WORKING_PREFIX_PRESETS } from "./presets";
 
 export function resolvePreset(value: string, presets: string[]) {
@@ -7,7 +7,9 @@ export function resolvePreset(value: string, presets: string[]) {
 }
 
 export function displayPreset(value: string) {
-	return value === RANDOM_VALUE ? RANDOM_OPTION : value;
+	if (value === RANDOM_VALUE) return RANDOM_OPTION;
+	if (value === OFF_VALUE) return OFF_OPTION;
+	return value;
 }
 
 export type OccurrenceText = {
@@ -27,9 +29,12 @@ export function formatSpeed(config: Config, occurrence: OccurrenceText, speed: n
 	return speed === null ? `-- ${label}` : `${speed.toFixed(1)} ${label}`;
 }
 
-export function renderLastMedianTokS(config: Config, occurrence: OccurrenceText, speed: number | null) {
-	return `${config.footerPrefix} ${formatSpeed(config, occurrence, speed)}`;
+export function renderFooterTokS(config: Config, occurrence: OccurrenceText, speed: number | null) {
+	const speedText = formatSpeed(config, occurrence, speed);
+	return config.footerPrefix === OFF_VALUE ? speedText : `${config.footerPrefix} ${speedText}`;
 }
+
+export const renderLastMedianTokS = renderFooterTokS;
 
 function speedBadge(config: Config, occurrence: OccurrenceText, speed: number | null) {
 	if (config.icon === "none" || config.icon.trim() === "") return formatSpeed(config, occurrence, speed);

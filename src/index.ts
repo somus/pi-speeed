@@ -1,6 +1,6 @@
 import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { type Config, loadConfig, saveConfig } from "./config";
-import { chooseOccurrenceText, clearUi, type OccurrenceText, renderLastMedianTokS, renderWorkingTokS, updateStatus } from "./display";
+import { chooseOccurrenceText, clearUi, type OccurrenceText, renderFooterTokS, renderWorkingTokS, updateStatus } from "./display";
 import { deltaChars, medianTokS, rescaleSamplesToFinalTokens, type TokenSample, tokensForUpdate } from "./metrics";
 import { applyRunCatIndicator, type RunCatState } from "./runcat";
 import { openSettings } from "./settings";
@@ -14,6 +14,8 @@ export default function (pi: ExtensionAPI) {
 	let streamedChars = 0;
 	let lastOutputTokens = 0;
 	let lastMedianTokS: number | null = null;
+	let sessionOutputTokens = 0;
+	let sessionDurationMs = 0;
 	let tokenSamples: TokenSample[] = [];
 	let occurrence: OccurrenceText = { label: null, workingPrefix: null };
 	let aggregateStats = loadStats();
@@ -27,19 +29,29 @@ export default function (pi: ExtensionAPI) {
 		tokenSamples = [];
 	}
 
+	function sessionAvgTokS() {
+		return sessionDurationMs > 0 ? sessionOutputTokens / (sessionDurationMs / 1000) : null;
+	}
+
+	function renderFooterStatus() {
+		return renderFooterTokS(config, occurrence, sessionAvgTokS());
+	}
+
 	function applyConfig(ctx: ExtensionContext) {
 		saveConfig(config);
 		if (!config.enabled) clearUi(ctx);
 		else {
 			applyRunCatIndicator(ctx, config, runcatState, lastMedianTokS, true);
-			updateStatus(ctx, config, renderLastMedianTokS(config, occurrence, lastMedianTokS));
+			updateStatus(ctx, config, renderFooterStatus());
 		}
 	}
 
 	pi.on("session_start", async (_event, ctx) => {
 		config = loadConfig();
+		sessionOutputTokens = 0;
+		sessionDurationMs = 0;
 		applyRunCatIndicator(ctx, config, runcatState, lastMedianTokS, true);
-		if (config.enabled && ctx.hasUI) updateStatus(ctx, config, renderLastMedianTokS(config, occurrence, lastMedianTokS));
+		if (config.enabled && ctx.hasUI) updateStatus(ctx, config, renderFooterStatus());
 	});
 
 	pi.on("agent_start", async (_event, ctx) => {
@@ -124,7 +136,11 @@ export default function (pi: ExtensionAPI) {
 				stopReason: event.message.stopReason,
 			});
 		}
-		updateStatus(ctx, config, renderLastMedianTokS(config, occurrence, lastMedianTokS));
+		if (event.message.stopReason !== "error" && event.message.stopReason !== "aborted") {
+			sessionOutputTokens += tokens;
+			sessionDurationMs += endedAt - startedAt;
+		}
+		updateStatus(ctx, config, renderFooterStatus());
 		applyRunCatIndicator(ctx, config, runcatState, lastMedianTokS, true);
 		if (ctx.hasUI) ctx.ui.setWorkingMessage();
 		resetMessageMetrics();

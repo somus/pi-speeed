@@ -1,5 +1,5 @@
 import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { type Config, CUSTOM_OPTION, DEFAULT_CONFIG, RANDOM_OPTION, RANDOM_VALUE } from "./config";
+import { type Config, CUSTOM_OPTION, DEFAULT_CONFIG, OFF_OPTION, OFF_VALUE, RANDOM_OPTION, RANDOM_VALUE } from "./config";
 import { displayPreset } from "./display";
 import { FOOTER_PREFIX_PRESETS, ICON_PRESETS, LABEL_PRESETS, WORKING_PREFIX_PRESETS } from "./presets";
 import { loadStats, summarizeStats } from "./stats";
@@ -33,7 +33,9 @@ async function pickPreset(ctx: ExtensionContext, title: string, current: string,
 	const choice = await ctx.ui.select(title, options);
 	if (!choice) return current;
 	if (choice === RANDOM_OPTION) return RANDOM_VALUE;
-	if (choice === CUSTOM_OPTION) return (await ctx.ui.input(title, current === RANDOM_VALUE ? presets[0] : current)) ?? current;
+	if (choice === OFF_OPTION) return OFF_VALUE;
+	if (choice === CUSTOM_OPTION)
+		return (await ctx.ui.input(title, current === RANDOM_VALUE || current === OFF_VALUE ? presets[0] : current)) ?? current;
 	return choice;
 }
 
