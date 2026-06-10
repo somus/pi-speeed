@@ -1,6 +1,6 @@
 {
 	"name": "pi-speeed",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A pi extension that shows live model speed with a configurable RunCat speed badge.",
 	"type": "module",
 	"license": "MIT",
